@@ -1,28 +1,28 @@
 #pragma once
-#include "TcpServer.h"
+#include "TcpHttpProtocol.h"
 #include <string>
-#include <unordered_map>
-
+#include <sstream>
+#include <iostream>
 #ifdef _WIN32
 #include <winsock2.h>
+#include <ws2tcpip.h>
+#pragma comment(lib, "Ws2_32.lib")
 #else
 #include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
 #define SOCKET int
+#define closesocket(s) close(s)
 #endif
 
-class TcpHttpServer : public TcpServer {
-  protected:
-    std::unordered_map<std::string, std::function<std::string(const std::string&)>> get_routes;
-    //std::unordered_map<std::string, std::string> post_routes;
+class TcpHttpServer : public TcpHttpProtocol {
   public:
+    virtual void run() = 0;
+    virtual void initialize_routes() = 0;
+    std::string handle_get_request(const std::string& data) override;
+    void handle_client(SOCKET conn);
+    void start_listening();
+
     TcpHttpServer();
-    //~TcpHttpServer();
-
-    std::string handle_get_request(const std::string& path);
-    //std::string handle_post_requests(const std::string& body);
-    std::string get_mime_type(const std::string& path);
-
-    void initialize_routes();
-    void handle_client(SOCKET client_sock);
-    void run();
 };
