@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# JetBrains IDEs (CLion, etc.)
+.idea/
+
+# Build artifacts
+*.exe
+*.dSYM/
